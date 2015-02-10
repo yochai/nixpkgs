@@ -100,9 +100,8 @@ rec {
     path = mkOptionType {
       name = "path";
       # Hacky: there is no ‘isPath’ primop.
-      # builtins.toString throws an unhelpful error when x is a set which doesn't have
-      # an outPath or a list, so we explicitly check for that.
-      check = x: !(builtins.isAttrs x && !(x ? outPath)) && !builtins.isList x && 
+      # need to check isString first because otherwise toString throws an error.
+      check = x: builtins.isString x &&
         builtins.unsafeDiscardStringContext (builtins.substring 0 1 (toString x)) == "/";
       merge = mergeOneOption;
     };
